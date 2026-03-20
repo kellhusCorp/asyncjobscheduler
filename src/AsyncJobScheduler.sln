@@ -2,6 +2,11 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AsyncJobScheduler.Domain", "AsyncJobScheduler.Domain\AsyncJobScheduler.Domain.csproj", "{52205135-905E-4EA6-B432-F1E30354E423}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solution items", "solution items", "{7A764638-97A7-48BF-A206-BB3A9C3C26E6}"
+	ProjectSection(SolutionItems) = preProject
+		..\.github\workflows\checks.yml = ..\.github\workflows\checks.yml
+	EndProjectSection
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AsyncJobScheduler.Application", "AsyncJobScheduler.Application\AsyncJobScheduler.Application.csproj", "{8FFF5619-8FEF-4682-BF8A-8072908C120A}"
 EndProject
 Global
