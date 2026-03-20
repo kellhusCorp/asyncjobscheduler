@@ -17,7 +17,9 @@ jobs:
           dotnet-version: 10.0.x
 
       - name: Restore dependencies
-        run: dotnet restore .\src\AsyncJobScheduler.sln
+        working-directory: src
+        run: dotnet restore AsyncJobScheduler.sln
 
       - name: Build solution
-        run: dotnet build .\src\AsyncJobScheduler.sln --configuration Release --no-restore
+        working-directory: src
+        run: dotnet build AsyncJobScheduler.sln --configuration Release --no-restore
