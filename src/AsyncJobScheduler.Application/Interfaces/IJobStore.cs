@@ -13,4 +13,6 @@ public interface IJobStore
     bool TryGetJob(Guid id, [NotNullWhen(true)] out Job? job);
     
     IReadOnlyCollection<Job> Jobs { get; }
+    
+    bool TryUpdate(Job job);
 }
