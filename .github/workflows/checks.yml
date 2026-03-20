@@ -1,7 +1,6 @@
 name: CI
 
 on:
-  push:
   pull_request:
 
 jobs:
@@ -18,7 +17,7 @@ jobs:
           dotnet-version: 10.0.x
 
       - name: Restore dependencies
-        run: dotnet restore AsyncJobScheduler.sln
+        run: dotnet restore .\src\AsyncJobScheduler.sln
 
       - name: Build solution
-        run: dotnet build AsyncJobScheduler.sln --configuration Release --no-restore
+        run: dotnet build .\src\AsyncJobScheduler.sln --configuration Release --no-restore
