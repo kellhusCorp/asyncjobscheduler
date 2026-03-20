@@ -36,6 +36,8 @@ public sealed class InMemoryJobStore : IJobStore
             throw new InvalidOperationException("Job does not exist");
         }
 
-        return _jobs.TryUpdate(job.Id, job, job);
+        _jobs[job.Id] = job;
+        
+        return true;
     }
 }
