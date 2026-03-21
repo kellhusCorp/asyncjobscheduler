@@ -14,7 +14,7 @@ public sealed class InMemoryJobStore : IJobStore
 
     public Job Add(Job job)
     {
-        if (!_jobs.TryAdd(job.Id, job))
+        if (!_jobs.TryAdd(job.Id, job.ShallowCopy()))
         {
             throw new InvalidOperationException("Job already exists");
         }
@@ -34,7 +34,7 @@ public sealed class InMemoryJobStore : IJobStore
         return true;
     }
 
-    public IReadOnlyCollection<Job> Jobs => Array.AsReadOnly(_jobs.ToArray().Select(x => x.Value).ToArray());
+    public IReadOnlyCollection<Job> Jobs => Array.AsReadOnly(_jobs.ToArray().Select(x => x.Value.ShallowCopy()).ToArray());
 
     public bool TryUpdate(Job job)
     {
@@ -43,7 +43,7 @@ public sealed class InMemoryJobStore : IJobStore
             return false;
         }
 
-        _jobs[job.Id] = job;
+        _jobs[job.Id] = job.ShallowCopy();
 
         return true;
     }
