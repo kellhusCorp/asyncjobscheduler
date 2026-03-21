@@ -7,7 +7,7 @@ namespace AsyncJobScheduler.Domain.Entities;
 /// </summary>
 public sealed class Job
 {
-    public Guid Id { get; set; }
+    public Guid Id { get; init; }
     
     public JobStatus Status { get; set; }
     
@@ -30,4 +30,12 @@ public sealed class Job
     public TimeSpan? Timeout { get; init; }
 
     #endregion
+
+    /// <summary>
+    /// Returns a shallow copy of job.
+    /// </summary>
+    public Job ShallowCopy()
+    {
+        return (Job)MemberwiseClone();
+    }
 }

@@ -1,0 +1,50 @@
+﻿using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
+using AsyncJobScheduler.Application.Interfaces;
+using AsyncJobScheduler.Domain.Entities;
+
+namespace AsyncJobScheduler.Infrastructure;
+
+/// <summary>
+/// Defines an in-memory job store.
+/// </summary>
+public sealed class InMemoryJobStore : IJobStore
+{
+    private readonly ConcurrentDictionary<Guid, Job> _jobs = new();
+
+    public Job Add(Job job)
+    {
+        if (!_jobs.TryAdd(job.Id, job.ShallowCopy()))
+        {
+            throw new InvalidOperationException("Job already exists");
+        }
+
+        return job;
+    }
+
+    public bool TryGetJob(Guid id, [NotNullWhen(true)] out Job? job)
+    {
+        if (!_jobs.TryGetValue(id, out job))
+        {
+            return false;
+        }
+
+        job = job.ShallowCopy();
+
+        return true;
+    }
+
+    public IReadOnlyCollection<Job> Jobs => Array.AsReadOnly(_jobs.ToArray().Select(x => x.Value.ShallowCopy()).ToArray());
+
+    public bool TryUpdate(Job job)
+    {
+        if (!_jobs.ContainsKey(job.Id))
+        {
+            return false;
+        }
+
+        _jobs[job.Id] = job.ShallowCopy();
+
+        return true;
+    }
+}
