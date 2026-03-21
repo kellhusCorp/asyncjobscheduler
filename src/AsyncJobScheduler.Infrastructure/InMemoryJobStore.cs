@@ -11,14 +11,11 @@ namespace AsyncJobScheduler.Infrastructure;
 public sealed class InMemoryJobStore : IJobStore
 {
     private readonly ConcurrentDictionary<Guid, Job> _jobs = new();
-    
+
     public Job Add(Job job)
     {
-        if (!_jobs.TryAdd(job.Id, job))
-        {
-            throw new InvalidOperationException("Job already exists");
-        }
-        
+        if (!_jobs.TryAdd(job.Id, job)) throw new InvalidOperationException("Job already exists");
+
         return job;
     }
 
@@ -27,17 +24,14 @@ public sealed class InMemoryJobStore : IJobStore
         return _jobs.TryGetValue(id, out job);
     }
 
-    public IReadOnlyCollection<Job> Jobs => _jobs.Values.ToList().AsReadOnly();
+    public IReadOnlyCollection<Job> Jobs => Array.AsReadOnly(_jobs.ToArray().Select(x => x.Value).ToArray());
 
     public bool TryUpdate(Job job)
     {
-        if (!_jobs.ContainsKey(job.Id))
-        {
-            throw new InvalidOperationException("Job does not exist");
-        }
+        if (!_jobs.ContainsKey(job.Id)) throw new InvalidOperationException("Job does not exist");
 
         _jobs[job.Id] = job;
-        
+
         return true;
     }
 }

@@ -7,7 +7,7 @@ namespace AsyncJobScheduler.Domain.Entities;
 /// </summary>
 public sealed class Job
 {
-    public Guid Id { get; set; }
+    public Guid Id { get; init; }
     
     public JobStatus Status { get; set; }
     
