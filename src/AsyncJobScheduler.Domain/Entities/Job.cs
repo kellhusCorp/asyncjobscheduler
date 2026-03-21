@@ -30,4 +30,12 @@ public sealed class Job
     public TimeSpan? Timeout { get; init; }
 
     #endregion
+
+    /// <summary>
+    /// Returns a shallow copy of job.
+    /// </summary>
+    public Job ShallowCopy()
+    {
+        return (Job)MemberwiseClone();
+    }
 }

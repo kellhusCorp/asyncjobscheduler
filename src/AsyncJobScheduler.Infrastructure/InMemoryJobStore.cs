@@ -14,21 +14,34 @@ public sealed class InMemoryJobStore : IJobStore
 
     public Job Add(Job job)
     {
-        if (!_jobs.TryAdd(job.Id, job)) throw new InvalidOperationException("Job already exists");
+        if (!_jobs.TryAdd(job.Id, job))
+        {
+            throw new InvalidOperationException("Job already exists");
+        }
 
         return job;
     }
 
     public bool TryGetJob(Guid id, [NotNullWhen(true)] out Job? job)
     {
-        return _jobs.TryGetValue(id, out job);
+        if (!_jobs.TryGetValue(id, out job))
+        {
+            return false;
+        }
+
+        job = job.ShallowCopy();
+
+        return true;
     }
 
     public IReadOnlyCollection<Job> Jobs => Array.AsReadOnly(_jobs.ToArray().Select(x => x.Value).ToArray());
 
     public bool TryUpdate(Job job)
     {
-        if (!_jobs.ContainsKey(job.Id)) throw new InvalidOperationException("Job does not exist");
+        if (!_jobs.ContainsKey(job.Id))
+        {
+            throw new InvalidOperationException("Job does not exist");
+        }
 
         _jobs[job.Id] = job;
 

@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AsyncJobScheduler.Applicati
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AsyncJobScheduler.Infrastructure", "AsyncJobScheduler.Infrastructure\AsyncJobScheduler.Infrastructure.csproj", "{C2F0428E-CED2-4103-87F8-EF4E399053CD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AsyncJobScheduler.Shared", "AsyncJobScheduler.Shared\AsyncJobScheduler.Shared.csproj", "{BC42528F-0F8F-426A-87B5-4B5BC89AEBB9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,5 +31,9 @@ Global
 		{C2F0428E-CED2-4103-87F8-EF4E399053CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2F0428E-CED2-4103-87F8-EF4E399053CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C2F0428E-CED2-4103-87F8-EF4E399053CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC42528F-0F8F-426A-87B5-4B5BC89AEBB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC42528F-0F8F-426A-87B5-4B5BC89AEBB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC42528F-0F8F-426A-87B5-4B5BC89AEBB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC42528F-0F8F-426A-87B5-4B5BC89AEBB9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
