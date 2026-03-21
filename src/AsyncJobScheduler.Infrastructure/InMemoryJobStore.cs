@@ -40,7 +40,7 @@ public sealed class InMemoryJobStore : IJobStore
     {
         if (!_jobs.ContainsKey(job.Id))
         {
-            throw new InvalidOperationException("Job does not exist");
+            return false;
         }
 
         _jobs[job.Id] = job;
