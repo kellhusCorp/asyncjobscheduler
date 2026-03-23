@@ -1,0 +1,17 @@
+### Create a job
+
+# @name create_job
+POST {{baseUrl}}/api/jobs
+Content-Type: application/json
+
+{
+  "duration": "00:00:05",
+  "shouldFail": false
+}
+
+> {% 
+ client.test("201 Created", () => {
+     client.assert(response.status == 201, "Expected 201")
+ });
+ client.global.set("jobId", response.body.id)
+%}
