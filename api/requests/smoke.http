@@ -15,3 +15,15 @@ Content-Type: application/json
  });
  client.global.set("jobId", response.body.id)
 %}
+
+### Get the job by id
+
+# @name get_job_by_id
+GET {{baseUrl}}/api/jobs/{{jobId}}
+Content-Type: application/json
+
+> {% 
+    client.test("200 OK / Job exists", () => {
+        client.assert(response.status == 200, "Job exists")
+    });
+ %}
