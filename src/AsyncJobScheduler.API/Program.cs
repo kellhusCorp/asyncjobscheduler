@@ -37,4 +37,9 @@ app.MapGet("/api/jobs/{id:guid}", ([FromRoute] Guid id, [FromServices] IJobStore
     return Results.Ok(job.ToResponse());
 });
 
+app.MapGet("/api/jobs", ([FromServices] IJobStore jobStore) =>
+{
+    return Results.Ok(jobStore.Jobs.Select(x => x.ToResponse()));
+});
+
 app.Run();
