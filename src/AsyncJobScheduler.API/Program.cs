@@ -18,8 +18,6 @@ if (app.Environment.IsDevelopment())
 
 app.MapPost("/api/jobs", ([FromBody] CreateJobRequest request, [FromServices] IJobStore jobStore) =>
 {
-    // todo implement
-
     var job = request.ToModel();
 
     jobStore.Add(job);
