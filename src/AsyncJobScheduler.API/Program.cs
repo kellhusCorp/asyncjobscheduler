@@ -1,3 +1,4 @@
+using System.Collections;
 using AsyncJobScheduler.API.Dtos;
 using AsyncJobScheduler.API.Validators;
 using AsyncJobScheduler.Application.Interfaces;
@@ -35,7 +36,7 @@ app.MapPost("/api/jobs", async (
     jobStore.Add(job);
 
     return Results.Created($"/api/jobs/{job.Id}", job.ToResponse());
-});
+}).Produces<JobResponse>(StatusCodes.Status201Created);
 
 app.MapGet("/api/jobs/{id:guid}", ([FromRoute] Guid id, [FromServices] IJobStore jobStore) =>
 {
@@ -45,8 +46,9 @@ app.MapGet("/api/jobs/{id:guid}", ([FromRoute] Guid id, [FromServices] IJobStore
     }
 
     return Results.Ok(job.ToResponse());
-});
+}).Produces<JobResponse>();
 
-app.MapGet("/api/jobs", ([FromServices] IJobStore jobStore) => { return Results.Ok(jobStore.Jobs.Select(x => x.ToResponse())); });
+app.MapGet("/api/jobs", ([FromServices] IJobStore jobStore) => { return Results.Ok(jobStore.Jobs.Select(x => x.ToResponse())); })
+    .Produces<IEnumerable<JobResponse>>();
 
 app.Run();
