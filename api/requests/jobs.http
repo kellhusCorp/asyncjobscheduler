@@ -19,7 +19,7 @@ Content-Type: application/json
 }
 
 > {% 
-    client.test("Create a job returns bad request", () => {
+    client.test("Create a job returns a bad request", () => {
         client.assert(response.status == 400, "Status is not 400")
     })
  %}
