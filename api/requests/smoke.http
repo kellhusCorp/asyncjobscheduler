@@ -35,9 +35,9 @@ GET {{baseUrl}}/api/jobs
 Content-Type: application/json
 
 > {% 
-    client.test("200 OK / Job count equals 1", () => {
+    client.test("200 OK / Jobs contain job with id", () => {
         client.assert(response.status == 200, "Expected 200")
         client.assert(Array.isArray(response.body), "Expected response body to be an array")
-        client.assert(response.body.length === 1, `Expected exactly 1 job, got ${response.body.length}`)
+        client.assert(response.body.some(job => job.id == client.global.get("jobId")), "Expected response body to contain a job with id " + client.global.get("jobId"))
     })
  %}
