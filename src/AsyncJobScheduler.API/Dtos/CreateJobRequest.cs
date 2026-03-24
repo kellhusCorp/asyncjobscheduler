@@ -1,14 +1,19 @@
-﻿using AsyncJobScheduler.Domain.Entities;
+﻿using System.ComponentModel.DataAnnotations;
+using AsyncJobScheduler.API.Validation.Attributes;
+using AsyncJobScheduler.Domain.Entities;
 using AsyncJobScheduler.Domain.Enums;
 
 namespace AsyncJobScheduler.API.Dtos;
 
 public sealed class CreateJobRequest
 {
+    [Required]
+    [PositiveTimeSpan]
     public TimeSpan Duration { get; init; }
 
     public bool ShouldFail { get; init; }
 
+    [PositiveTimeSpan]
     public TimeSpan? Timeout { get; init; }
 }
 
