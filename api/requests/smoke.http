@@ -1,0 +1,43 @@
+### Create a job
+
+# @name create_job
+POST {{baseUrl}}/api/jobs
+Content-Type: application/json
+
+{
+  "duration": "00:00:05",
+  "shouldFail": false
+}
+
+> {% 
+ client.test("201 Created", () => {
+     client.assert(response.status == 201, "Expected 201")
+ });
+ client.global.set("jobId", response.body.id)
+%}
+
+### Get the job by id
+
+# @name get_job_by_id
+GET {{baseUrl}}/api/jobs/{{jobId}}
+Content-Type: application/json
+
+> {% 
+    client.test("200 OK / Job exists", () => {
+        client.assert(response.status == 200, "Job exists")
+    });
+ %}
+
+### Get jobs
+
+# @name get_jobs
+GET {{baseUrl}}/api/jobs
+Content-Type: application/json
+
+> {% 
+    client.test("200 OK / Jobs contain job with id", () => {
+        client.assert(response.status == 200, "Expected 200")
+        client.assert(Array.isArray(response.body), "Expected response body to be an array")
+        client.assert(response.body.some(job => job.id == client.global.get("jobId")), "Expected response body to contain a job with id " + client.global.get("jobId"))
+    })
+ %}
