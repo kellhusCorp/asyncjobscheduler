@@ -2,12 +2,13 @@ using AsyncJobScheduler.API.Dtos;
 using AsyncJobScheduler.API.Validators;
 using AsyncJobScheduler.Application.Interfaces;
 using AsyncJobScheduler.Infrastructure;
+using AsyncJobScheduler.Infrastructure.InMemory;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSingleton<IJobStore, InMemoryJobStore>();
+builder.Services.AddSingleton<IJobStore, JobStore>();
 builder.Services.AddScoped<IValidator<CreateJobRequest>, CreateJobRequestValidator>();
 builder.Services.AddOpenApi();
 

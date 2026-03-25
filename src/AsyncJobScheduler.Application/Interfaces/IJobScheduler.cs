@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using AsyncJobScheduler.Application.Enums;
 using AsyncJobScheduler.Domain.Entities;
 
 namespace AsyncJobScheduler.Application.Interfaces;
@@ -14,5 +15,7 @@ public interface IJobScheduler
 
     bool TryGetJob(Guid id, [NotNullWhen(true)] out Job? job);
     
-    void CancelJob(Guid id);
+    CancelJobResult CancelJob(Guid id);
+    
+    Task<Job?> WaitForCompletionAsync(Guid id, CancellationToken ct);
 }

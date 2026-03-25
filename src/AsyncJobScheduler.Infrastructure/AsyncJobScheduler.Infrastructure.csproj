@@ -10,4 +10,7 @@
       <ProjectReference Include="..\AsyncJobScheduler.Application\AsyncJobScheduler.Application.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <InternalsVisibleTo Include="AsyncJobScheduler.Infrastructure.UnitTests"/>
+    </ItemGroup>
 </Project>
