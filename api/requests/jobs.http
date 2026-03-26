@@ -8,6 +8,10 @@ Content-Type: application/json
   "timeout": "00:00:10"
 }
 
+> {% 
+ client.global.set("id", response.body.id);
+ %}
+
 ### Create a job returns bad request
 POST {{baseUrl}}/api/jobs
 Content-Type: application/json
@@ -23,3 +27,12 @@ Content-Type: application/json
         client.assert(response.status == 400, "Status is not 400")
     })
  %}
+
+### Delete (cancel) a queued job
+DELETE {{baseUrl}}/api/jobs/{{id}}
+Content-Type: application/json
+
+{
+  
+}
+

@@ -7,20 +7,23 @@ using AsyncJobScheduler.Domain.Enums;
 
 namespace AsyncJobScheduler.Infrastructure.InMemory;
 
+/// <summary>
+/// Defines an in-memory job scheduler.
+/// </summary>
 public sealed class JobScheduler : IJobScheduler, IDisposable
 {
-    public JobScheduler(IJobStore store)
-    {
-        _store = store;
-    }
-    
-    private readonly IJobStore _store;
-    
     private readonly ConcurrentDictionary<Guid, JobInfo> _jobs = new();
 
     private readonly ConcurrentQueue<Guid> _queue = new();
 
     private readonly SemaphoreSlim _semaphore = new(0);
+
+    private readonly IJobStore _store;
+
+    public JobScheduler(IJobStore store)
+    {
+        _store = store;
+    }
 
     public void Dispose()
     {
@@ -100,7 +103,7 @@ public sealed class JobScheduler : IJobScheduler, IDisposable
             {
                 return await jobInfo.CompletionSource.Task.WaitAsync(ct);
             }
-            
+
             await Task.Delay(50, ct);
         }
     }
