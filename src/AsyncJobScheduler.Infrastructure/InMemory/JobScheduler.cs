@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
+using AsyncJobScheduler.Application;
 using AsyncJobScheduler.Application.Enums;
 using AsyncJobScheduler.Application.Interfaces;
 using AsyncJobScheduler.Domain.Entities;
@@ -120,7 +121,7 @@ public sealed class JobScheduler : IJobScheduler, IDisposable
         }
     }
 
-    internal async Task<Guid> DequeueAsync(CancellationToken ct)
+    public async Task<Guid> DequeueAsync(CancellationToken ct)
     {
         while (true)
         {
@@ -132,14 +133,14 @@ public sealed class JobScheduler : IJobScheduler, IDisposable
         }
     }
 
-    internal bool TryGetInfo(Guid jobId, out JobInfo? info)
+    public bool TryGetInfo(Guid jobId, out JobInfo? info)
     {
         var found = _jobs.TryGetValue(jobId, out var jobInfo);
         info = jobInfo;
         return found;
     }
 
-    internal void Complete(Job job)
+    public void Complete(Job job)
     {
         _store.TryUpdate(job);
 
@@ -147,26 +148,6 @@ public sealed class JobScheduler : IJobScheduler, IDisposable
         {
             jobInfo.CompletionSource.TrySetResult(job);
             jobInfo.Dispose();
-        }
-    }
-
-    internal sealed class JobInfo : IDisposable
-    {
-        public JobInfo()
-        {
-            CancellationSource = new CancellationTokenSource();
-            CompletionSource = new TaskCompletionSource<Job>(TaskCreationOptions.RunContinuationsAsynchronously);
-        }
-
-        internal TaskCompletionSource<Job> CompletionSource { get; }
-
-        internal CancellationTokenSource CancellationSource { get; }
-
-        public bool CancelRequested => CancellationSource.IsCancellationRequested;
-
-        public void Dispose()
-        {
-            CancellationSource.Dispose();
         }
     }
 }
