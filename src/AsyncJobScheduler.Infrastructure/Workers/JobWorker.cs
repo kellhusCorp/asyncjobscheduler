@@ -9,7 +9,6 @@ namespace AsyncJobScheduler.Infrastructure.Workers;
 
 public sealed class JobWorker : BackgroundService
 {
-    private readonly ManualResetEvent _gateway = new(false);
     private readonly IJobScheduler _jobScheduler;
     private readonly Lock _lock = new();
     private readonly ILogger<JobWorker> _logger;
@@ -74,8 +73,6 @@ public sealed class JobWorker : BackgroundService
     {
         try
         {
-            _gateway.WaitOne();
-
             await ProcessJobAsync(jobId, ct);
         }
         finally
@@ -167,7 +164,6 @@ public sealed class JobWorker : BackgroundService
     public override void Dispose()
     {
         _semaphore.Dispose();
-        _gateway.Dispose();
         base.Dispose();
     }
 }

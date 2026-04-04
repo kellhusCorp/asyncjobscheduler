@@ -2,7 +2,9 @@ using AsyncJobScheduler.API.Dtos;
 using AsyncJobScheduler.API.Validators;
 using AsyncJobScheduler.Application.Enums;
 using AsyncJobScheduler.Application.Interfaces;
+using AsyncJobScheduler.Infrastructure;
 using AsyncJobScheduler.Infrastructure.InMemory;
+using AsyncJobScheduler.Infrastructure.Options;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,6 +14,8 @@ builder.Services.AddSingleton<IJobStore, JobStore>();
 builder.Services.AddSingleton<IJobScheduler, JobScheduler>();
 builder.Services.AddScoped<IValidator<CreateJobRequest>, CreateJobRequestValidator>();
 builder.Services.AddOpenApi();
+builder.Services.Configure<JobWorkerOptions>(builder.Configuration.GetSection("JobWorker"));
+builder.Services.AddWorkers(builder.Configuration);
 
 var app = builder.Build();
 
