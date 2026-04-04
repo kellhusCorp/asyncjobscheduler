@@ -26,6 +26,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "requests", "requests", "{28
 		..\api\requests\smoke.http = ..\api\requests\smoke.http
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{BF17CDB2-6541-4D35-B2AD-7D275698C13C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AsyncJobScheduler.Infrastructure.UnitTests", "..\tests\AsyncJobScheduler.Infrastructure.UnitTests\AsyncJobScheduler.Infrastructure.UnitTests.csproj", "{B3EC3C55-D21D-4370-8CE5-793A580E3E57}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,8 +56,13 @@ Global
 		{E878C2B2-8A9B-4752-8C60-F53C98C6F0D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E878C2B2-8A9B-4752-8C60-F53C98C6F0D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E878C2B2-8A9B-4752-8C60-F53C98C6F0D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3EC3C55-D21D-4370-8CE5-793A580E3E57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3EC3C55-D21D-4370-8CE5-793A580E3E57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3EC3C55-D21D-4370-8CE5-793A580E3E57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3EC3C55-D21D-4370-8CE5-793A580E3E57}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{28D68F6A-BEB1-46B1-925E-653D7EEB59B7} = {41EF0809-774E-44AD-ABF5-1BD0A461913E}
+		{B3EC3C55-D21D-4370-8CE5-793A580E3E57} = {BF17CDB2-6541-4D35-B2AD-7D275698C13C}
 	EndGlobalSection
 EndGlobal

@@ -3,12 +3,12 @@ using System.Diagnostics.CodeAnalysis;
 using AsyncJobScheduler.Application.Interfaces;
 using AsyncJobScheduler.Domain.Entities;
 
-namespace AsyncJobScheduler.Infrastructure;
+namespace AsyncJobScheduler.Infrastructure.InMemory;
 
 /// <summary>
 /// Defines an in-memory job store.
 /// </summary>
-public sealed class InMemoryJobStore : IJobStore
+public sealed class JobStore : IJobStore
 {
     private readonly ConcurrentDictionary<Guid, Job> _jobs = new();
 
