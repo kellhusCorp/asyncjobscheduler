@@ -23,22 +23,28 @@ public static class DependencyInjection
             const int ticksInSec = 5;
             
             var scheduler = sp.GetRequiredService<IJobScheduler>();
+            var coordinator = sp.GetRequiredService<IJobCoordinator>();
             var logger = sp.GetRequiredService<ILogger<JobWorker>>();
             var options = sp.GetRequiredService<IOptions<JobWorkerOptions>>();
 
-            return new JobWorker(scheduler, logger, options.Value, DoWork);
+            return new JobWorker(scheduler, coordinator, logger, options.Value, DoWork);
 
-            static async Task DoWork(Job job, CancellationToken ct)
+            static async Task DoWork(Job job, IProgress<double> progress, CancellationToken ct)
             {
-                var steps = (int)job.Duration.TotalSeconds * ticksInSec;
-                var delay = job.Duration / steps;
+                var steps = Math.Max((int)Math.Ceiling(job.Duration.TotalSeconds * ticksInSec), 1);
+                var delay = TimeSpan.FromMilliseconds(job.Duration.TotalMilliseconds / steps);
+                
                 for (var i = 1; i <= steps; i++)
                 {
                     ct.ThrowIfCancellationRequested();
 
                     await Task.Delay(delay, ct);
 
-                    job.ProgressPoints = Math.Round(i / (double)steps, 2);
+                    var points = Math.Round(i / (double)steps, 2);
+
+                    progress.Report(points);
+                    
+                    job.ProgressPoints = points;
 
                     if (job.ShouldFail && i >= steps / 2)
                     {

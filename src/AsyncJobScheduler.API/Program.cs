@@ -11,7 +11,9 @@ using Microsoft.AspNetCore.Mvc;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSingleton<IJobStore, JobStore>();
-builder.Services.AddSingleton<IJobScheduler, JobScheduler>();
+builder.Services.AddSingleton<JobScheduler>();
+builder.Services.AddSingleton<IJobScheduler, JobScheduler>(sp => sp.GetRequiredService<JobScheduler>());
+builder.Services.AddSingleton<IJobCoordinator, JobScheduler>(sp => sp.GetRequiredService<JobScheduler>());
 builder.Services.AddScoped<IValidator<CreateJobRequest>, CreateJobRequestValidator>();
 builder.Services.AddOpenApi();
 builder.Services.Configure<JobWorkerOptions>(builder.Configuration.GetSection("JobWorker"));

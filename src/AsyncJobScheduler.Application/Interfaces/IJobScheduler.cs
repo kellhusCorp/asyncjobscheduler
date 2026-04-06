@@ -19,9 +19,5 @@ public interface IJobScheduler
 
     Task<Job?> WaitForCompletionAsync(Guid id, CancellationToken ct);
     
-    Task<Guid> DequeueAsync(CancellationToken ct);
-    
-    bool TryGetInfo(Guid jobId, out JobInfo? info);
-    
-    void Complete(Job job);
+    bool TryUpdate(Job job);
 }

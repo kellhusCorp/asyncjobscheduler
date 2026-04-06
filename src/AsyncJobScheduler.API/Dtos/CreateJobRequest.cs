@@ -1,12 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-using AsyncJobScheduler.Domain.Entities;
-using AsyncJobScheduler.Domain.Enums;
+﻿using AsyncJobScheduler.Domain.Entities;
 
 namespace AsyncJobScheduler.API.Dtos;
 
 public sealed class CreateJobRequest
 {
-    [Required]
     public TimeSpan Duration { get; init; }
 
     public bool ShouldFail { get; init; }
@@ -37,18 +34,5 @@ public static class JobMapping
             job.FinishedAt,
             job.ErrorMessage
         );
-    }
-
-    public static Job ToModel(this CreateJobRequest request)
-    {
-        return new Job
-        {
-            Id = Guid.NewGuid(),
-            CreatedAt = DateTime.UtcNow,
-            Duration = request.Duration,
-            ShouldFail = request.ShouldFail,
-            Status = JobStatus.Created,
-            Timeout = request.Timeout
-        };
     }
 }

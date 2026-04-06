@@ -3,7 +3,7 @@ POST {{baseUrl}}/api/jobs
 Content-Type: application/json
 
 {
-  "duration": "00:01:00",
+  "duration": "00:00:10",
   "shouldFail": false,
   "timeout": "00:00:40"
 }

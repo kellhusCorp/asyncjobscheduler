@@ -11,7 +11,7 @@ namespace AsyncJobScheduler.Infrastructure.InMemory;
 /// <summary>
 /// Defines an in-memory job scheduler.
 /// </summary>
-public sealed class JobScheduler : IJobScheduler, IDisposable
+public sealed class JobScheduler : IJobScheduler, IJobCoordinator, IDisposable
 {
     private readonly ConcurrentDictionary<Guid, JobInfo> _jobs = new();
 
@@ -45,7 +45,7 @@ public sealed class JobScheduler : IJobScheduler, IDisposable
         var job = new Job
         {
             Id = Guid.NewGuid(),
-            Status = JobStatus.Created,
+            Status = JobStatus.Queued,
             CreatedAt = DateTime.UtcNow,
             Duration = duration,
             ShouldFail = shouldFail,
@@ -113,12 +113,6 @@ public sealed class JobScheduler : IJobScheduler, IDisposable
     {
         _queue.Enqueue(id);
         _semaphore.Release();
-
-        if (_store.TryGetJob(id, out var job))
-        {
-            job.Status = JobStatus.Queued;
-            _store.TryUpdate(job);
-        }
     }
 
     public async Task<Guid> DequeueAsync(CancellationToken ct)
@@ -138,6 +132,11 @@ public sealed class JobScheduler : IJobScheduler, IDisposable
         var found = _jobs.TryGetValue(jobId, out var jobInfo);
         info = jobInfo;
         return found;
+    }
+
+    public bool TryUpdate(Job job)
+    {
+        return _store.TryUpdate(job);
     }
 
     public void Complete(Job job)

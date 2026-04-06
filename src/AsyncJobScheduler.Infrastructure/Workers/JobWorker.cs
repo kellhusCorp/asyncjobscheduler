@@ -9,16 +9,20 @@ namespace AsyncJobScheduler.Infrastructure.Workers;
 
 public sealed class JobWorker : BackgroundService
 {
+    private readonly Func<Job, IProgress<double>, CancellationToken, Task> _doWork;
+    private readonly IJobCoordinator _jobCoordinator;
     private readonly IJobScheduler _jobScheduler;
     private readonly Lock _lock = new();
     private readonly ILogger<JobWorker> _logger;
-    private readonly Func<Job, CancellationToken, Task> _doWork;
     private readonly SemaphoreSlim _semaphore;
     private readonly List<Task> _tasks = new();
 
-    public JobWorker(IJobScheduler jobScheduler, ILogger<JobWorker> logger, JobWorkerOptions options, Func<Job, CancellationToken, Task> doWork)
+    public JobWorker(
+        IJobScheduler jobScheduler, IJobCoordinator jobCoordinator, ILogger<JobWorker> logger, JobWorkerOptions options,
+        Func<Job, IProgress<double>, CancellationToken, Task> doWork)
     {
         _jobScheduler = jobScheduler;
+        _jobCoordinator = jobCoordinator;
         _logger = logger;
         _doWork = doWork;
         _semaphore = new SemaphoreSlim(options.MaxDegreeOfParallelism);
@@ -33,8 +37,8 @@ public sealed class JobWorker : BackgroundService
             while (!ct.IsCancellationRequested)
             {
                 await _semaphore.WaitAsync(ct);
-                
-                var jobId = await _jobScheduler.DequeueAsync(ct);
+
+                var jobId = await _jobCoordinator.DequeueAsync(ct);
 
                 var task = RunAsync(jobId, ct);
 
@@ -88,7 +92,7 @@ public sealed class JobWorker : BackgroundService
             return;
         }
 
-        if (!_jobScheduler.TryGetInfo(jobId, out var jobInfo) || jobInfo == null)
+        if (!_jobCoordinator.TryGetInfo(jobId, out var jobInfo) || jobInfo == null)
         {
             return;
         }
@@ -101,16 +105,23 @@ public sealed class JobWorker : BackgroundService
 
         try
         {
+            var progress = new Progress<double>(points =>
+            {
+                job.ProgressPoints = points;
+                _jobScheduler.TryUpdate(job);
+            });
+            
             job.Status = JobStatus.Running;
             job.StartedAt = DateTime.UtcNow;
+            _jobScheduler.TryUpdate(job);
             _logger.LogTrace("Job {jobId} has started", jobId);
-
-            await _doWork(job, linkedToken);
+            
+            await _doWork(job, progress, linkedToken);
 
             job.Status = JobStatus.Succeeded;
             job.ProgressPoints = 1d;
             job.FinishedAt = DateTime.UtcNow;
-
+            _jobScheduler.TryUpdate(job);
             _logger.LogTrace("Job {jobId} has succeeded", jobId);
         }
         catch (OperationCanceledException) when (jobInfo.CancelRequested)
@@ -144,7 +155,8 @@ public sealed class JobWorker : BackgroundService
         }
         finally
         {
-            _jobScheduler.Complete(job);
+            _jobScheduler.TryUpdate(job);
+            _jobCoordinator.Complete(job);
         }
     }
 
