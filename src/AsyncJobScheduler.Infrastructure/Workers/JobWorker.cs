@@ -32,9 +32,9 @@ public sealed class JobWorker : BackgroundService
         {
             while (!ct.IsCancellationRequested)
             {
-                var jobId = await _jobScheduler.DequeueAsync(ct);
-
                 await _semaphore.WaitAsync(ct);
+                
+                var jobId = await _jobScheduler.DequeueAsync(ct);
 
                 var task = RunAsync(jobId, ct);
 
