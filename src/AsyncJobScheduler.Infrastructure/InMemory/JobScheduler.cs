@@ -80,7 +80,15 @@ public sealed class JobScheduler : IJobScheduler, IJobCoordinator, IDisposable
             return CancelJobResult.AlreadyCompleted;
         }
 
-        jobInfo.CancellationSource.Cancel();
+        try
+        {
+            jobInfo.CancellationSource.Cancel();
+        }
+        catch (ObjectDisposedException)
+        {
+            return CancelJobResult.AlreadyCompleted;
+        }
+        
         return CancelJobResult.CancelRequested;
     }
 
