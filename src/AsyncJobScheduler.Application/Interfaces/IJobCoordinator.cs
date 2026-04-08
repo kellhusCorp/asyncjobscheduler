@@ -9,4 +9,6 @@ public interface IJobCoordinator
     void Complete(Job job);
     
     bool TryGetInfo(Guid jobId, out JobInfo? info);
+        
+    bool TryUpdate(Job job);
 }

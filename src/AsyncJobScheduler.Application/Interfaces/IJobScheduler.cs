@@ -18,6 +18,4 @@ public interface IJobScheduler
     CancelJobResult CancelJob(Guid id);
 
     Task<Job?> WaitForCompletionAsync(Guid id, CancellationToken ct);
-    
-    bool TryUpdate(Job job);
 }

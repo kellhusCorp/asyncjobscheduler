@@ -43,8 +43,6 @@ public static class DependencyInjection
                     var points = Math.Round(i / (double)steps, 2);
 
                     progress.Report(points);
-                    
-                    job.ProgressPoints = points;
 
                     if (job.ShouldFail && i >= steps / 2)
                     {

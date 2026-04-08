@@ -100,7 +100,7 @@ public sealed class JobWorker : BackgroundService
         using var timeoutCts = job.Timeout.HasValue ? new CancellationTokenSource(job.Timeout.Value) : null;
 
         using var linkedCts = CreateLinkedCts(timeoutCts?.Token, jobInfo.CancellationSource.Token, ct);
-
+        
         var linkedToken = linkedCts.Token;
 
         try
@@ -108,12 +108,14 @@ public sealed class JobWorker : BackgroundService
             var progress = new Progress<double>(points =>
             {
                 job.ProgressPoints = points;
-                _jobScheduler.TryUpdate(job);
+                _jobCoordinator.TryUpdate(job);
             });
+            
+            linkedToken.ThrowIfCancellationRequested();
             
             job.Status = JobStatus.Running;
             job.StartedAt = DateTime.UtcNow;
-            _jobScheduler.TryUpdate(job);
+            _jobCoordinator.TryUpdate(job);
             _logger.LogTrace("Job {jobId} has started", jobId);
             
             await _doWork(job, progress, linkedToken);
@@ -121,7 +123,7 @@ public sealed class JobWorker : BackgroundService
             job.Status = JobStatus.Succeeded;
             job.ProgressPoints = 1d;
             job.FinishedAt = DateTime.UtcNow;
-            _jobScheduler.TryUpdate(job);
+            _jobCoordinator.TryUpdate(job);
             _logger.LogTrace("Job {jobId} has succeeded", jobId);
         }
         catch (OperationCanceledException) when (jobInfo.CancelRequested)
@@ -155,7 +157,7 @@ public sealed class JobWorker : BackgroundService
         }
         finally
         {
-            _jobScheduler.TryUpdate(job);
+            _jobCoordinator.TryUpdate(job);
             _jobCoordinator.Complete(job);
         }
     }
