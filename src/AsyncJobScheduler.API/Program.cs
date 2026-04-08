@@ -27,6 +27,20 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi("/openapi/{documentName}.yaml");
 }
 
+app.MapGet("/api/jobs/{id:guid}/wait", async ([FromRoute] Guid id, HttpContext ctx, [FromServices] IJobScheduler jobScheduler) =>
+    {
+        try
+        {
+            var job = await jobScheduler.WaitForCompletionAsync(id, ctx.RequestAborted);
+            return job == null ? Results.NotFound() : Results.Ok(job.ToResponse());
+        }
+        catch (OperationCanceledException)
+        {
+            return Results.StatusCode(StatusCodes.Status499ClientClosedRequest);
+        }
+    }).Produces<JobResponse>()
+    .Produces(StatusCodes.Status404NotFound);
+
 app.MapPost("/api/jobs", async (
         [FromBody] CreateJobRequest request,
         [FromServices] IJobScheduler jobScheduler,

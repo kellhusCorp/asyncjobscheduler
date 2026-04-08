@@ -48,3 +48,8 @@ Content-Type: application/json
   
 }
 
+
+### Wait a job
+
+GET {{baseUrl}}/api/jobs/{{id}}/wait
+Content-Type: application/json
