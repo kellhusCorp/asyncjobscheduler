@@ -1,5 +1,10 @@
 ﻿using System.Collections.Concurrent;
+using AsyncJobScheduler.Domain.Enums;
 using AsyncJobScheduler.Infrastructure.InMemory;
+using AsyncJobScheduler.Infrastructure.Options;
+using AsyncJobScheduler.Infrastructure.Workers;
+using Microsoft.Extensions.Logging;
+
 // ReSharper disable AccessToDisposedClosure
 
 namespace AsyncJobScheduler.Infrastructure.UnitTests.InMemory;
@@ -43,5 +48,33 @@ public sealed class JobSchedulerTests
         }
         
         Assert.Empty(jobIds);
+    }
+
+    [Fact]
+    public async Task Test_Add_Jobs_Should_Eventually_Succeed()
+    {
+        using var cts = new CancellationTokenSource();
+        using var loggerFactory = LoggerFactory.Create(opt => opt.AddConsole());
+        var timeout = TimeSpan.FromSeconds(10);
+        var store = new JobStore();
+        using var scheduler = new JobScheduler(store);
+        using var worker = new JobWorker(scheduler, scheduler, loggerFactory.CreateLogger<JobWorker>(), new JobWorkerOptions()
+        {
+            MaxDegreeOfParallelism = 1
+        }, doWork: DependencyInjection.DoWork);
+        await worker.StartAsync(cts.Token);
+        
+        var job = scheduler.AddJob(timeout, false, null);
+        var jobId = job.Id;
+        
+        await Eventually.AssertAsync(() =>
+        {
+            if (!scheduler.TryGetJob(jobId, out var job))
+            {
+                throw new Exception("Job not found");
+            }
+            
+            return Task.FromResult(job.Status == JobStatus.Succeeded);
+        }, timeout: timeout + TimeSpan.FromSeconds(1), ct: cts.Token);
     }
 }
