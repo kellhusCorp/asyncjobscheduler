@@ -10,6 +10,39 @@
     }
   ],
   "paths": {
+    "/api/jobs/{id}/wait": {
+      "get": {
+        "tags": [
+          "AsyncJobScheduler.API"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
     "/api/jobs": {
       "post": {
         "tags": [
@@ -93,15 +126,39 @@
             "description": "Not Found"
           }
         }
+      },
+      "delete": {
+        "tags": [
+          "AsyncJobScheduler.API"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        }
       }
     }
   },
   "components": {
     "schemas": {
       "CreateJobRequest": {
-        "required": [
-          "duration"
-        ],
         "type": "object",
         "properties": {
           "duration": {
