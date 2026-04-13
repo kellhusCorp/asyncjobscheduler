@@ -1,0 +1,8 @@
+.git
+.github
+.idea
+**/bin
+**/obj
+src-front/node_modules
+src-front/dist
+AsyncJobScheduler_3.zip
