@@ -1,0 +1,16 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: src/AsyncJobScheduler.API/Dockerfile
+    ports:
+      - "5121:8080"
+
+  frontend:
+    build:
+      context: ./src-front
+      dockerfile: Dockerfile
+    depends_on:
+      - backend
+    ports:
+      - "4173:80"
